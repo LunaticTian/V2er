@@ -26,52 +26,69 @@ heard = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36",
 }
 
-req = requests.get(url='https://www.v2ex.com/go/flamewar?p=1',headers = heard)
-# print(req.text)
-listTest = []
-soup = BeautifulSoup(req.text,"lxml")
-a = soup.select("#TopicsNode > div")
-#print(len(a))
+# req = requests.get(url='https://www.v2ex.com/go/flamewar?p=1',headers = heard)
+# # print(req.text)
+# listTest = []
+# soup = BeautifulSoup(req.text,"lxml")
+# a = soup.select("#TopicsNode > div")
+# #print(len(a))
+#
+# for i in a :
+#     pattern = re.compile('topic-link" href="(.*?)">', re.S)
+#     items = re.findall(pattern, str(i))
+#     timeK = True
+#     pattern = re.compile('</a></strong>  •  (.*?)前', re.S)
+#     items1 = re.findall(pattern, str(i))
+#
+#     pattern = re.compile('.*<a class=".*?" href=.*">(.*?)</a>', re.S)
+#     items2 = re.findall(pattern, str(i))
+#     # 记录页数
+#     page = 0
+#     try:
+#         page = int(items2[0])/100
+#     except Exception:
+#         continue
+#     a = str(page).split('.')[1]
+#     page = int(page)
+#     if int(a) > 0:
+#         page = int(page) + 1
+#     else:
+#         page = int(page) + 0
+#     # 这里对回复时间进行判断如果超过循环的时间，不对该贴进行爬虫
+#     link = (str(items[0]).split("#")[0], page)
+#     if (timeK):
+#         listTest.append(link)
+#     else:
+#         items1Str = str(items1[0])
+#         if (not("天" in items1Str or "小时" in items1Str)):
+#             listTest.append(link)
+#
+# print(listTest)
 
-for i in a :
-    pattern = re.compile('topic-link" href="(.*?)">', re.S)
-    items = re.findall(pattern, str(i))
-    timeK = True
-    pattern = re.compile('</a></strong>  •  (.*?)前', re.S)
-    items1 = re.findall(pattern, str(i))
-
-    pattern = re.compile('.*<a class=".*?" href=.*">(.*?)</a>', re.S)
-    items2 = re.findall(pattern, str(i))
-    # 记录页数
-    page = 0
-    try:
-        page = int(items2[0])/100
-    except Exception:
-        continue
-    a = str(page).split('.')[1]
-    page = int(page)
-    if int(a) > 0:
-        page = int(page) + 1
-    else:
-        page = int(page) + 0
-    # 这里对回复时间进行判断如果超过循环的时间，不对该贴进行爬虫
-    link = (str(items[0]).split("#")[0], page)
-    if (timeK):
-        listTest.append(link)
-    else:
-        items1Str = str(items1[0])
-        if (not("天" in items1Str or "小时" in items1Str)):
-            listTest.append(link)
-
-print(listTest)
 
 
+test = [('/t/698803', 2)]
 
-test = ['/t/698693']
+for i in range(1,test[0][1]+1):
+    url = 'https://www.v2ex.com' + test[0][0]+"?p="+str(i)
+    req = requests.get(url=url,headers = heard)
+    soup = BeautifulSoup(req.text,"lxml")
+    a = soup.select("#Main > div:nth-child(4) > div.cell")
+    # print(a)
+    for ai in a:
 
-# url = 'https://www.v2ex.com' + test[0]
-# req = requests.get(url=url,headers = heard)
-# print(req.text)
+        soup1 = BeautifulSoup(str(ai), "lxml")
+        a1 = soup1.select("div.reply_content")
+        try:
+            print(a1[0].get_text())
+        except Exception:
+            continue
+        pattern = re.compile('<a class="dark".*">(.*?)</a>.*ago">(.*?)前', re.S)
+        items = re.findall(pattern, str(ai))
+        print(items)
+        print()
+        print("===========================")
+    break
 
 
 
